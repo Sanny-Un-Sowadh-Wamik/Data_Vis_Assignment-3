@@ -1,0 +1,790 @@
+{
+  "version": 1,
+  "locale": "en_US",
+  "platform": "4.3.0",
+  "metadata": {
+    "appmode": "rmd-shiny",
+    "entrypoint": "fugitives_dashboard.Rmd"
+  },
+  "packages": {
+    "BH": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "BH",
+        "Type": "Package",
+        "Version": "1.81.0-1"
+      }
+    },
+    "DT": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "DT",
+        "Type": "Package",
+        "Version": "0.28"
+      }
+    },
+    "R6": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "R6",
+        "Type": "Package",
+        "Version": "2.5.1"
+      }
+    },
+    "RColorBrewer": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "RColorBrewer",
+        "Type": "Package",
+        "Version": "1.1-3"
+      }
+    },
+    "Rcpp": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "Rcpp",
+        "Type": "Package",
+        "Version": "1.0.11"
+      }
+    },
+    "base64enc": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "base64enc",
+        "Type": "Package",
+        "Version": "0.1-3"
+      }
+    },
+    "bslib": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "bslib",
+        "Type": "Package",
+        "Version": "0.5.1"
+      }
+    },
+    "cachem": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "cachem",
+        "Type": "Package",
+        "Version": "1.0.8"
+      }
+    },
+    "cli": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "cli",
+        "Type": "Package",
+        "Version": "3.6.1"
+      }
+    },
+    "colorspace": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "colorspace",
+        "Type": "Package",
+        "Version": "2.1-0"
+      }
+    },
+    "commonmark": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "commonmark",
+        "Type": "Package",
+        "Version": "1.9.0"
+      }
+    },
+    "crayon": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "crayon",
+        "Type": "Package",
+        "Version": "1.5.2"
+      }
+    },
+    "crosstalk": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "crosstalk",
+        "Type": "Package",
+        "Version": "1.2.0"
+      }
+    },
+    "data.table": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "data.table",
+        "Type": "Package",
+        "Version": "1.14.8"
+      }
+    },
+    "digest": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "digest",
+        "Type": "Package",
+        "Version": "0.6.33"
+      }
+    },
+    "dplyr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "dplyr",
+        "Type": "Package",
+        "Version": "1.1.3"
+      }
+    },
+    "ellipsis": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "ellipsis",
+        "Type": "Package",
+        "Version": "0.3.2"
+      }
+    },
+    "evaluate": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "evaluate",
+        "Type": "Package",
+        "Version": "0.21"
+      }
+    },
+    "fansi": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "fansi",
+        "Type": "Package",
+        "Version": "1.0.4"
+      }
+    },
+    "farver": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "farver",
+        "Type": "Package",
+        "Version": "2.1.1"
+      }
+    },
+    "fastmap": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "fastmap",
+        "Type": "Package",
+        "Version": "1.1.1"
+      }
+    },
+    "flexdashboard": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "flexdashboard",
+        "Type": "Package",
+        "Version": "0.6.2"
+      }
+    },
+    "fontawesome": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "fontawesome",
+        "Type": "Package",
+        "Version": "0.5.2"
+      }
+    },
+    "fs": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "fs",
+        "Type": "Package",
+        "Version": "1.6.3"
+      }
+    },
+    "generics": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "generics",
+        "Type": "Package",
+        "Version": "0.1.3"
+      }
+    },
+    "ggplot2": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "ggplot2",
+        "Type": "Package",
+        "Version": "3.4.3"
+      }
+    },
+    "glue": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "glue",
+        "Type": "Package",
+        "Version": "1.6.2"
+      }
+    },
+    "gridExtra": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "gridExtra",
+        "Type": "Package",
+        "Version": "2.3"
+      }
+    },
+    "gtable": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "gtable",
+        "Type": "Package",
+        "Version": "0.3.4"
+      }
+    },
+    "highr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "highr",
+        "Type": "Package",
+        "Version": "0.10"
+      }
+    },
+    "hms": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "hms",
+        "Type": "Package",
+        "Version": "1.1.3"
+      }
+    },
+    "htmltools": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "htmltools",
+        "Type": "Package",
+        "Version": "0.5.6"
+      }
+    },
+    "htmlwidgets": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "htmlwidgets",
+        "Type": "Package",
+        "Version": "1.6.2"
+      }
+    },
+    "httpuv": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "httpuv",
+        "Type": "Package",
+        "Version": "1.6.11"
+      }
+    },
+    "httr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "httr",
+        "Type": "Package",
+        "Version": "1.4.7"
+      }
+    },
+    "isoband": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "isoband",
+        "Type": "Package",
+        "Version": "0.2.7"
+      }
+    },
+    "jquerylib": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "jquerylib",
+        "Type": "Package",
+        "Version": "0.1.4"
+      }
+    },
+    "jsonlite": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "jsonlite",
+        "Type": "Package",
+        "Version": "1.8.7"
+      }
+    },
+    "knitr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "knitr",
+        "Type": "Package",
+        "Version": "1.43"
+      }
+    },
+    "labeling": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "labeling",
+        "Type": "Package",
+        "Version": "0.4.3"
+      }
+    },
+    "later": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "later",
+        "Type": "Package",
+        "Version": "1.3.1"
+      }
+    },
+    "lazyeval": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "lazyeval",
+        "Type": "Package",
+        "Version": "0.2.2"
+      }
+    },
+    "leaflet": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "leaflet",
+        "Type": "Package",
+        "Version": "2.1.2"
+      }
+    },
+    "leaflet.providers": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "leaflet.providers",
+        "Type": "Package",
+        "Version": "1.9.0"
+      }
+    },
+    "lifecycle": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "lifecycle",
+        "Type": "Package",
+        "Version": "1.0.3"
+      }
+    },
+    "magrittr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "magrittr",
+        "Type": "Package",
+        "Version": "2.0.3"
+      }
+    },
+    "memoise": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "memoise",
+        "Type": "Package",
+        "Version": "2.0.1"
+      }
+    },
+    "mime": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "mime",
+        "Type": "Package",
+        "Version": "0.12"
+      }
+    },
+    "munsell": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "munsell",
+        "Type": "Package",
+        "Version": "0.5.0"
+      }
+    },
+    "pillar": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "pillar",
+        "Type": "Package",
+        "Version": "1.9.0"
+      }
+    },
+    "pkgconfig": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "pkgconfig",
+        "Type": "Package",
+        "Version": "2.0.3"
+      }
+    },
+    "plotly": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "plotly",
+        "Type": "Package",
+        "Version": "4.10.2"
+      }
+    },
+    "png": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "png",
+        "Type": "Package",
+        "Version": "0.1-8"
+      }
+    },
+    "prettyunits": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "prettyunits",
+        "Type": "Package",
+        "Version": "1.1.1"
+      }
+    },
+    "progress": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "progress",
+        "Type": "Package",
+        "Version": "1.2.2"
+      }
+    },
+    "promises": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "promises",
+        "Type": "Package",
+        "Version": "1.2.1"
+      }
+    },
+    "purrr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "purrr",
+        "Type": "Package",
+        "Version": "1.0.2"
+      }
+    },
+    "rappdirs": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "rappdirs",
+        "Type": "Package",
+        "Version": "0.3.3"
+      }
+    },
+    "raster": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "raster",
+        "Type": "Package",
+        "Version": "3.6-23"
+      }
+    },
+    "readr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "readr",
+        "Type": "Package",
+        "Version": "2.1.4"
+      }
+    },
+    "rlang": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "rlang",
+        "Type": "Package",
+        "Version": "1.1.1"
+      }
+    },
+    "rmarkdown": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "rmarkdown",
+        "Type": "Package",
+        "Version": "2.24"
+      }
+    },
+    "sass": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "sass",
+        "Type": "Package",
+        "Version": "0.4.7"
+      }
+    },
+    "scales": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "scales",
+        "Type": "Package",
+        "Version": "1.2.1"
+      }
+    },
+    "shiny": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "shiny",
+        "Type": "Package",
+        "Version": "1.7.5"
+      }
+    },
+    "sourcetools": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "sourcetools",
+        "Type": "Package",
+        "Version": "0.1.7-1"
+      }
+    },
+    "sp": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "sp",
+        "Type": "Package",
+        "Version": "2.0-0"
+      }
+    },
+    "stringi": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "stringi",
+        "Type": "Package",
+        "Version": "1.7.12"
+      }
+    },
+    "stringr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "stringr",
+        "Type": "Package",
+        "Version": "1.5.0"
+      }
+    },
+    "terra": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "terra",
+        "Type": "Package",
+        "Version": "1.7-46"
+      }
+    },
+    "tibble": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tibble",
+        "Type": "Package",
+        "Version": "3.2.1"
+      }
+    },
+    "tidyr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tidyr",
+        "Type": "Package",
+        "Version": "1.3.0"
+      }
+    },
+    "tidyselect": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tidyselect",
+        "Type": "Package",
+        "Version": "1.2.0"
+      }
+    },
+    "tidyverse": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tidyverse",
+        "Type": "Package",
+        "Version": "2.0.0"
+      }
+    },
+    "tinytex": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tinytex",
+        "Type": "Package",
+        "Version": "0.46"
+      }
+    },
+    "tzdb": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "tzdb",
+        "Type": "Package",
+        "Version": "0.4.0"
+      }
+    },
+    "utf8": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "utf8",
+        "Type": "Package",
+        "Version": "1.2.3"
+      }
+    },
+    "vctrs": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "vctrs",
+        "Type": "Package",
+        "Version": "0.6.3"
+      }
+    },
+    "viridis": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "viridis",
+        "Type": "Package",
+        "Version": "0.6.4"
+      }
+    },
+    "viridisLite": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "viridisLite",
+        "Type": "Package",
+        "Version": "0.4.2"
+      }
+    },
+    "vroom": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "vroom",
+        "Type": "Package",
+        "Version": "1.6.3"
+      }
+    },
+    "withr": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "withr",
+        "Type": "Package",
+        "Version": "2.5.0"
+      }
+    },
+    "xfun": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "xfun",
+        "Type": "Package",
+        "Version": "0.40"
+      }
+    },
+    "xtable": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "xtable",
+        "Type": "Package",
+        "Version": "1.8-4"
+      }
+    },
+    "yaml": {
+      "Source": "CRAN",
+      "Repository": "https://cran.rstudio.com",
+      "description": {
+        "Package": "yaml",
+        "Type": "Package",
+        "Version": "2.3.7"
+      }
+    }
+  },
+  "files": {
+    "fugitives_dashboard.Rmd": {
+      "checksum": "9d91838751181f0bc0da657cd68a5f6a0336dbb5"
+    },
+    "Countries.csv": {
+      "checksum": "checksum_placeholder"
+    },
+    "Fugitives.csv": {
+      "checksum": "checksum_placeholder"
+    },
+    "Regions.csv": {
+      "checksum": "checksum_placeholder"
+    }
+  }
+}

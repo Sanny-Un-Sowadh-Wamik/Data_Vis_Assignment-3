@@ -6,12 +6,24 @@ library(plotly)
 library(DT)
 library(leaflet)
 library(viridis)
+# Clear everything first
+if(file.exists("manifest.json")) file.remove("manifest.json")
+if(file.exists("app.R-manifest.json")) file.remove("app.R-manifest.json")
+
+# Generate fresh manifest
 library(rsconnect)
-rsconnect::writeManifest(
-  appDir = ".",
-  appFiles = c("app.R", "Countries.csv", "Fugitives.csv", "Regions.csv"),
-  appPrimaryDoc = "app.R"
-)
+rsconnect::writeManifest(appPrimaryDoc = "app.R")
+
+# Check if platform field exists
+manifest <- jsonlite::read_json("manifest.json")
+if(is.null(manifest$platform)) {
+  # If platform is missing, add it manually
+  manifest$platform <- as.character(getRversion())
+  jsonlite::write_json(manifest, "manifest.json", pretty = TRUE, auto_unbox = TRUE)
+}
+
+# Verify final content
+cat(readLines("manifest.json"), sep = "\n")
 # Load and preprocess data
 fugitives <- read_csv("Fugitives.csv", show_col_types = FALSE)
 countries <- read_csv("Countries.csv", show_col_types = FALSE)

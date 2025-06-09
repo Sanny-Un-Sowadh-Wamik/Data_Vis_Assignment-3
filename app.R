@@ -7,7 +7,11 @@ library(DT)
 library(leaflet)
 library(viridis)
 library(rsconnect)
-rsconnect::writeManifest()
+rsconnect::writeManifest(
+  appDir = ".",
+  appFiles = c("app.R", "Countries.csv", "Fugitives.csv", "Regions.csv"),
+  appPrimaryDoc = "app.R"
+)
 # Load and preprocess data
 fugitives <- read_csv("Fugitives.csv", show_col_types = FALSE)
 countries <- read_csv("Countries.csv", show_col_types = FALSE)

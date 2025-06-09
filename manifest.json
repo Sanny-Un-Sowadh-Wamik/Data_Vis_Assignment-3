@@ -1,8 +1,0 @@
-{
-  "version": 1,
-  "locale": "en_US",
-  "metadata": {
-    "appmode": "shiny",
-    "entrypoint": "app.R"
-  }
-}

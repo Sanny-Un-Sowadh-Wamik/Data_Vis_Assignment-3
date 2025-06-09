@@ -1,0 +1,7 @@
+flexdashboard
+shiny
+tidyverse
+plotly
+DT
+leaflet
+viridis

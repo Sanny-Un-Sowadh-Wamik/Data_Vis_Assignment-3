@@ -5,7 +5,7 @@
 An interactive Shiny dashboard visualizing Interpol's Red Notice database, tracking international fugitives from 2010-2014. This project tells a compelling story about global law enforcement efforts through data visualization.
 
 ### 🔗 Live Demo
-[View Dashboard on Posit Connect](https://connect.posit.cloud/content/[your-app-id]/)
+[View Dashboard on Posit Connect]([https://connect.posit.cloud/content/[your-app-id]/](https://019755c5-7e6b-1738-34d8-c1d9cfa1acf5.share.connect.posit.cloud/))
 
 ---
 

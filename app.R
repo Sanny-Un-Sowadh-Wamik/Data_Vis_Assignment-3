@@ -13,15 +13,12 @@ if(file.exists("app.R-manifest.json")) file.remove("app.R-manifest.json")
 library(rsconnect)
 rsconnect::writeManifest(appPrimaryDoc = "app.R")
 
-# Check if platform field exists
+
 manifest <- jsonlite::read_json("manifest.json")
 if(is.null(manifest$platform)) {
-  # If platform is missing, add it manually
   manifest$platform <- as.character(getRversion())
   jsonlite::write_json(manifest, "manifest.json", pretty = TRUE, auto_unbox = TRUE)
 }
-
-# Verify final content
 cat(readLines("manifest.json"), sep = "\n")
 
 rsconnect::setAccountInfo(name='rwcrf7-sanny0un0sowadh-wamik',
@@ -90,7 +87,7 @@ country_coords <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Define UI
+# UI
 ui <- dashboardPage(
   dashboardHeader(title = "The Global Hunt: Mapping Interpol's Most Wanted"),
   

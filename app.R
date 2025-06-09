@@ -6,7 +6,8 @@ library(plotly)
 library(DT)
 library(leaflet)
 library(viridis)
-
+library(rsconnect)
+rsconnect::writeManifest()
 # Load and preprocess data
 fugitives <- read_csv("Fugitives.csv", show_col_types = FALSE)
 countries <- read_csv("Countries.csv", show_col_types = FALSE)

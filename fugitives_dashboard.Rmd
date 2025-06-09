@@ -1,0 +1,663 @@
+---
+title: "The Global Hunt: Mapping Interpol's Most Wanted"
+output: 
+  flexdashboard::flex_dashboard:
+    theme: cosmo
+    orientation: rows
+    vertical_layout: fill
+    social: menu
+    source_code: embed
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+# Load required libraries
+library(flexdashboard)
+library(shiny)
+library(tidyverse)
+library(plotly)
+library(DT)
+library(leaflet)
+library(viridis)
+
+# Set plot theme
+theme_set(theme_minimal())
+
+# Load the data
+fugitives <- read_csv("Fugitives.csv", show_col_types = FALSE)
+countries <- read_csv("Countries.csv", show_col_types = FALSE)
+regions <- read_csv("Regions.csv", show_col_types = FALSE)
+
+# Data preprocessing
+fugitives_clean <- fugitives %>%
+  mutate(
+    # Clean status categories
+    Status = case_when(
+      grepl("free|at large|wanted", Status, ignore.case = TRUE) ~ "Free",
+      grepl("captured|arrested|custody", Status, ignore.case = TRUE) ~ "Captured",
+      grepl("deceased|dead", Status, ignore.case = TRUE) ~ "Deceased",
+      TRUE ~ "Unknown"
+    ),
+    Status = factor(Status, levels = c("Free", "Captured", "Deceased", "Unknown")),
+    
+    # Create age groups
+    Age_Group = cut(`Current Age (approx.)`, 
+                    breaks = c(0, 30, 40, 50, 60, 100), 
+                    labels = c("Under 30", "30-39", "40-49", "50-59", "60+"),
+                    include.lowest = TRUE),
+    
+    # Extract crime categories
+    Crime_Category = case_when(
+      grepl("murder|homicide|kill", `Wanted for`, ignore.case = TRUE) ~ "Murder/Homicide",
+      grepl("drug|narco|traffic", `Wanted for`, ignore.case = TRUE) ~ "Drug-related",
+      grepl("fraud|money|financial|embezzle", `Wanted for`, ignore.case = TRUE) ~ "Financial Crimes",
+      grepl("terror|explos", `Wanted for`, ignore.case = TRUE) ~ "Terrorism",
+      grepl("kidnap|abduct", `Wanted for`, ignore.case = TRUE) ~ "Kidnapping",
+      grepl("rape|sexual", `Wanted for`, ignore.case = TRUE) ~ "Sexual Crimes",
+      grepl("organized crime|criminal org", `Wanted for`, ignore.case = TRUE) ~ "Organized Crime",
+      TRUE ~ "Other"
+    ),
+    
+    # Clean year data
+    Year = as.numeric(`Year of Interpol operation`)
+  )
+
+# Define consistent color palettes
+status_colors <- c("Free" = "#e74c3c", 
+                   "Captured" = "#27ae60", 
+                   "Deceased" = "#7f8c8d", 
+                   "Unknown" = "#f39c12")
+
+# Calculate key metrics
+total_fugitives <- nrow(fugitives)
+free_fugitives <- sum(fugitives_clean$Status == "Free", na.rm = TRUE)
+captured_fugitives <- sum(fugitives_clean$Status == "Captured", na.rm = TRUE)
+capture_rate <- round((captured_fugitives / total_fugitives) * 100, 1)
+avg_age <- round(mean(fugitives$`Current Age (approx.)`, na.rm = TRUE), 1)
+
+# Country coordinates for mapping
+country_coords <- data.frame(
+  Country = c("United States", "Mexico", "Brazil", "Colombia", "Canada", 
+              "Argentina", "Venezuela", "Peru", "Chile", "Ecuador",
+              "Bolivia", "Paraguay", "Uruguay", "Guatemala", "Honduras",
+              "El Salvador", "Nicaragua", "Costa Rica", "Panama", "Dominican Republic"),
+  lat = c(37.0902, 23.6345, -14.2350, 4.5709, 56.1304, 
+          -38.4161, 6.4238, -9.1900, -35.6751, -1.8312,
+          -16.2902, -23.4425, -32.5228, 15.7835, 15.2000,
+          13.7942, 12.8654, 9.7489, 8.5380, 18.7357),
+  lng = c(-95.7129, -102.5528, -51.9253, -74.2973, -106.3468, 
+          -63.6167, -66.5897, -75.0152, -71.5430, -78.1834,
+          -63.5887, -58.4438, -55.7658, -90.2308, -86.2419,
+          -88.8965, -85.2072, -83.7534, -80.7821, -70.1627),
+  stringsAsFactors = FALSE
+)
+```
+
+Overview {data-icon="fa-globe"}
+=====================================
+
+Row {data-height=150}
+-------------------------------------
+
+### Total Fugitives Tracked
+
+```{r}
+valueBox(
+  value = total_fugitives, 
+  caption = "Total Fugitives in Database",
+  icon = "fa-users",
+  color = "primary"
+)
+```
+
+### Currently at Large
+
+```{r}
+valueBox(
+  value = free_fugitives, 
+  caption = "Still on the Run",
+  icon = "fa-exclamation-triangle",
+  color = "danger"
+)
+```
+
+### Capture Rate
+
+```{r}
+valueBox(
+  value = paste0(capture_rate, "%"), 
+  caption = "Successfully Captured",
+  icon = "fa-handcuffs",
+  color = "success"
+)
+```
+
+### Countries Involved
+
+```{r}
+countries_count <- countries %>% 
+  filter(`National Fugitives` > 0 | `Possible Hosted Fugitives / Captured Fugitives` > 0) %>% 
+  nrow()
+
+valueBox(
+  value = countries_count, 
+  caption = "Countries with Fugitive Activity",
+  icon = "fa-map",
+  color = "info"
+)
+```
+
+Row {data-height=450}
+-------------------------------------
+
+### The Global Manhunt: Where Are They Hiding?
+
+```{r}
+# Create interactive world map
+renderLeaflet({
+  # Merge country data with coordinates
+  map_data <- countries %>%
+    left_join(country_coords, by = "Country") %>%
+    filter(!is.na(lat)) %>%
+    mutate(
+      Total_Activity = `National Fugitives` + `Possible Hosted Fugitives / Captured Fugitives`,
+      popup_text = paste0(
+        "<strong>", Country, "</strong><br>",
+        "<b>National Fugitives:</b> ", `National Fugitives`, "<br>",
+        "<b>Hosted/Captured:</b> ", `Possible Hosted Fugitives / Captured Fugitives`, "<br>",
+        "<b>Total Activity:</b> ", Total_Activity
+      )
+    )
+  
+  # Create color palette
+  pal <- colorNumeric(
+    palette = "YlOrRd",
+    domain = map_data$Total_Activity
+  )
+  
+  # Create map
+  leaflet(map_data) %>%
+    addProviderTiles(providers$CartoDB.Positron) %>%
+    setView(lng = -70, lat = -15, zoom = 3) %>%  # Center on South America
+    addCircleMarkers(
+      ~lng, ~lat,
+      radius = ~sqrt(Total_Activity) * 3,
+      popup = ~popup_text,
+      color = ~pal(Total_Activity),
+      fillColor = ~pal(Total_Activity),
+      fillOpacity = 0.7,
+      weight = 2
+    ) %>%
+    addLegend(
+      "bottomright", 
+      pal = pal,
+      values = ~Total_Activity,
+      title = "Fugitive<br>Activity",
+      opacity = 1
+    )
+})
+```
+
+### Status Over Time: The Hunt Continues
+
+```{r}
+# Status distribution by year
+renderPlotly({
+  status_by_year <- fugitives_clean %>%
+    filter(!is.na(Year)) %>%
+    group_by(Year, Status) %>%
+    summarise(Count = n(), .groups = "drop") %>%
+    complete(Year, Status, fill = list(Count = 0))
+  
+  p <- ggplot(status_by_year, aes(x = factor(Year), y = Count, fill = Status)) +
+    geom_bar(stat = "identity", position = "stack") +
+    scale_fill_manual(values = status_colors, name = "Current Status") +
+    labs(
+      title = "Fugitive Status by Interpol Operation Year",
+      subtitle = "Tracking capture success over time",
+      x = "Year of Interpol Operation", 
+      y = "Number of Fugitives"
+    ) +
+    theme_minimal() +
+    theme(
+      legend.position = "bottom",
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12, color = "gray60")
+    )
+  
+  ggplotly(p) %>% 
+    layout(
+      showlegend = TRUE,
+      legend = list(orientation = "h", y = -0.2)
+    )
+})
+```
+
+Row {data-height=400}
+-------------------------------------
+
+### Crime Categories: What Are They Wanted For?
+
+```{r}
+# Crime type analysis
+renderPlotly({
+  crime_summary <- fugitives_clean %>%
+    group_by(Crime_Category) %>%
+    summarise(
+      Count = n(),
+      Percentage = round(n() / nrow(fugitives_clean) * 100, 1)
+    ) %>%
+    arrange(desc(Count))
+  
+  # Create donut chart
+  plot_ly(
+    crime_summary, 
+    labels = ~Crime_Category, 
+    values = ~Count,
+    text = ~paste(Count, "fugitives<br>", Percentage, "%"),
+    type = 'pie',
+    hole = 0.4,
+    textposition = 'auto',
+    textinfo = 'label+percent',
+    marker = list(
+      colors = viridis(nrow(crime_summary)),
+      line = list(color = '#FFFFFF', width = 2)
+    ),
+    hoverinfo = 'text',
+    hovertext = ~paste(Crime_Category, "<br>", Count, " fugitives (", Percentage, "%)")
+  ) %>%
+    layout(
+      title = list(
+        text = "Distribution of Crimes",
+        font = list(size = 16, color = "black")
+      ),
+      showlegend = TRUE,
+      legend = list(orientation = "v", x = 1, y = 0.5),
+      annotations = list(
+        x = 0.5, y = 0.5, 
+        text = paste0("<b>", total_fugitives, "</b><br>Total Cases"),
+        showarrow = FALSE,
+        font = list(size = 14)
+      )
+    )
+})
+```
+
+### Regional Overview
+
+```{r}
+renderPlotly({
+  # Process regional data
+  regional_summary <- regions %>%
+    mutate(
+      Total = `National Fugitives` + `Wanted Fugitives`,
+      Region = factor(Region, levels = Region[order(Total, decreasing = TRUE)])
+    )
+  
+  # Create horizontal bar chart
+  p <- ggplot(regional_summary, aes(x = Region, y = Total)) +
+    geom_col(fill = "#3498db", alpha = 0.8) +
+    geom_text(aes(label = Total), hjust = -0.1, size = 3.5) +
+    coord_flip() +
+    labs(
+      title = "Fugitive Activity by Region",
+      subtitle = "Total fugitives (national + wanted)",
+      x = "",
+      y = "Number of Fugitives"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12, color = "gray60"),
+      panel.grid.major.y = element_blank()
+    ) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(regional_summary$Total) * 1.1))
+  
+  ggplotly(p, tooltip = c("y")) %>%
+    layout(showlegend = FALSE)
+})
+```
+
+Demographics {data-icon="fa-user-secret"}
+=====================================
+
+Row {data-height=500}
+-------------------------------------
+
+### Age Distribution by Current Status
+
+```{r}
+renderPlotly({
+  # Age distribution analysis
+  age_status <- fugitives_clean %>%
+    filter(!is.na(Age_Group)) %>%
+    group_by(Age_Group, Status) %>%
+    summarise(Count = n(), .groups = "drop") %>%
+    complete(Age_Group, Status, fill = list(Count = 0))
+  
+  p <- ggplot(age_status, aes(x = Age_Group, y = Count, fill = Status, text = paste("Status:", Status, "<br>Count:", Count))) +
+    geom_bar(stat = "identity", position = "dodge") +
+    scale_fill_manual(values = status_colors, name = "Status") +
+    labs(
+      title = "Age Groups by Current Status",
+      subtitle = paste("Average fugitive age:", avg_age, "years"),
+      x = "Age Group", 
+      y = "Number of Fugitives"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12, color = "gray60"),
+      axis.text.x = element_text(angle = 0, hjust = 0.5),
+      legend.position = "bottom"
+    )
+  
+  ggplotly(p, tooltip = "text") %>%
+    layout(
+      showlegend = TRUE,
+      legend = list(orientation = "h", y = -0.15)
+    )
+})
+```
+
+### Gender Analysis
+
+```{r}
+renderPlotly({
+  # Gender distribution
+  gender_summary <- fugitives_clean %>%
+    filter(!is.na(Sex)) %>%
+    group_by(Sex, Status) %>%
+    summarise(Count = n(), .groups = "drop") %>%
+    group_by(Sex) %>%
+    mutate(
+      Total = sum(Count),
+      Percentage = round(Count / Total * 100, 1)
+    )
+  
+  # Create stacked percentage bar chart
+  p <- ggplot(gender_summary, aes(x = Sex, y = Count, fill = Status)) +
+    geom_bar(stat = "identity", position = "fill") +
+    scale_fill_manual(values = status_colors, name = "Status") +
+    scale_y_continuous(labels = scales::percent) +
+    labs(
+      title = "Gender Distribution by Status",
+      subtitle = "Percentage breakdown of fugitive status by gender",
+      x = "Gender", 
+      y = "Percentage"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12, color = "gray60"),
+      legend.position = "bottom"
+    ) +
+    geom_text(
+      aes(label = paste0(Percentage, "%")),
+      position = position_fill(vjust = 0.5),
+      size = 3,
+      color = "white"
+    )
+  
+  ggplotly(p) %>%
+    layout(
+      showlegend = TRUE,
+      legend = list(orientation = "h", y = -0.15)
+    )
+})
+```
+
+Row {data-height=500}
+-------------------------------------
+
+### Top 15 Nationalities of Fugitives
+
+```{r}
+renderPlotly({
+  # Nationality analysis
+  nationality_data <- fugitives_clean %>%
+    filter(!is.na(Nationality)) %>%
+    group_by(Nationality) %>%
+    summarise(
+      Total = n(),
+      Free = sum(Status == "Free"),
+      Captured = sum(Status == "Captured"),
+      .groups = "drop"
+    ) %>%
+    arrange(desc(Total)) %>%
+    head(15) %>%
+    mutate(
+      Nationality = factor(Nationality, levels = rev(Nationality)),
+      Capture_Rate = round(Captured / Total * 100, 1)
+    )
+  
+  # Create horizontal bar chart with capture rate
+  p <- ggplot(nationality_data, aes(x = Nationality, y = Total)) +
+    geom_col(aes(fill = Capture_Rate), alpha = 0.8) +
+    scale_fill_gradient(low = "#e74c3c", high = "#27ae60", name = "Capture Rate (%)") +
+    geom_text(aes(label = paste0(Total, " (", Capture_Rate, "%)")), 
+              hjust = -0.1, size = 3) +
+    coord_flip() +
+    labs(
+      title = "Top 15 Nationalities of Fugitives",
+      subtitle = "Total count with capture rate percentage",
+      x = "", 
+      y = "Number of Fugitives"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12, color = "gray60"),
+      panel.grid.major.y = element_blank()
+    ) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(nationality_data$Total) * 1.25))
+  
+  ggplotly(p) %>%
+    layout(showlegend = TRUE)
+})
+```
+
+### Countries Hosting Fugitives
+
+```{r}
+renderPlotly({
+  # Countries hosting fugitives
+  hosting_data <- countries %>%
+    filter(`Possible Hosted Fugitives / Captured Fugitives` > 0) %>%
+    arrange(desc(`Possible Hosted Fugitives / Captured Fugitives`)) %>%
+    head(10) %>%
+    mutate(
+      Country = factor(Country, levels = rev(Country))
+    )
+  
+  # Create lollipop chart
+  p <- ggplot(hosting_data, aes(x = Country, y = `Possible Hosted Fugitives / Captured Fugitives`)) +
+    geom_segment(aes(x = Country, xend = Country, y = 0, yend = `Possible Hosted Fugitives / Captured Fugitives`),
+                 color = "gray70", size = 1) +
+    geom_point(size = 4, color = "#e74c3c") +
+    geom_text(aes(label = `Possible Hosted Fugitives / Captured Fugitives`), 
+              hjust = -0.5, size = 3.5) +
+    coord_flip() +
+    labs(
+      title = "Top 10 Countries Hosting/Capturing Fugitives",
+      subtitle = "Where fugitives are believed to be hiding or were captured",
+      x = "", 
+      y = "Number of Fugitives"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_text(size = 12, color = "gray60"),
+      panel.grid.major.y = element_blank()
+    ) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0, max(hosting_data$`Possible Hosted Fugitives / Captured Fugitives`) * 1.2))
+  
+  ggplotly(p, tooltip = c("x", "y"))
+})
+```
+
+Search & Explore {data-icon="fa-search"}
+=====================================
+
+Column {data-width=300}
+-------------------------------------
+
+### Search Filters
+
+```{r}
+# Create input controls
+selectInput("status_filter", 
+            label = "Filter by Status:",
+            choices = c("All", levels(fugitives_clean$Status)),
+            selected = "All",
+            width = "100%")
+
+selectInput("nationality_filter", 
+            label = "Filter by Nationality:",
+            choices = c("All", sort(unique(fugitives_clean$Nationality[!is.na(fugitives_clean$Nationality)]))),
+            selected = "All",
+            width = "100%")
+
+selectInput("crime_filter", 
+            label = "Filter by Crime Type:",
+            choices = c("All", sort(unique(fugitives_clean$Crime_Category))),
+            selected = "All",
+            width = "100%")
+
+sliderInput("age_filter", 
+            label = "Age Range:",
+            min = floor(min(fugitives_clean$`Current Age (approx.)`, na.rm = TRUE)),
+            max = ceiling(max(fugitives_clean$`Current Age (approx.)`, na.rm = TRUE)),
+            value = c(20, 80),
+            step = 1,
+            width = "100%")
+
+# Reactive filtered data
+filtered_data <- reactive({
+  data <- fugitives_clean
+  
+  if (input$status_filter != "All") {
+    data <- data %>% filter(Status == input$status_filter)
+  }
+  
+  if (input$nationality_filter != "All") {
+    data <- data %>% filter(Nationality == input$nationality_filter)
+  }
+  
+  if (input$crime_filter != "All") {
+    data <- data %>% filter(Crime_Category == input$crime_filter)
+  }
+  
+  data <- data %>% 
+    filter(`Current Age (approx.)` >= input$age_filter[1],
+           `Current Age (approx.)` <= input$age_filter[2])
+  
+  data
+})
+```
+
+### Summary Statistics
+
+```{r}
+renderUI({
+  data <- filtered_data()
+  
+  HTML(paste0(
+    '<div style="padding: 15px; background-color: #f8f9fa; border-radius: 5px;">',
+    '<h4>Filtered Results</h4>',
+    '<p><strong>Total Fugitives:</strong> ', nrow(data), '</p>',
+    '<p><strong>At Large:</strong> ', sum(data$Status == "Free", na.rm = TRUE), '</p>',
+    '<p><strong>Captured:</strong> ', sum(data$Status == "Captured", na.rm = TRUE), '</p>',
+    '<p><strong>Average Age:</strong> ', round(mean(data$`Current Age (approx.)`, na.rm = TRUE), 1), ' years</p>',
+    '</div>'
+  ))
+})
+```
+
+### About This Dashboard
+
+<div style="padding: 15px; background-color: #ecf0f1; border-radius: 5px; margin-top: 20px;">
+<h4>The Global Hunt</h4>
+<p>This dashboard visualizes data from Interpol's Red Notice database, tracking international fugitives from 2010-2014.</p>
+<p><strong>Key Findings:</strong></p>
+<ul>
+<li>Drug-related crimes dominate the list</li>
+<li>Latin America shows highest activity</li>
+<li>Capture rate varies significantly by region</li>
+</ul>
+<p><em>Data Source: Interpol Red Notice Database</em></p>
+</div>
+
+Column {data-width=700}
+-------------------------------------
+
+### Interactive Fugitive Database
+
+```{r}
+renderDT({
+  data_to_show <- filtered_data() %>%
+    select(
+      Fugitive, 
+      Nationality, 
+      `Wanted for`,
+      Crime_Category,
+      Status, 
+      `Current Age (approx.)`,
+      Sex,
+      `Country believed to be in / Country of capture`,
+      `Year of Interpol operation`
+    ) %>%
+    rename(
+      Name = Fugitive,
+      Crime = `Wanted for`,
+      `Crime Type` = Crime_Category,
+      Age = `Current Age (approx.)`,
+      Gender = Sex,
+      `Location/Capture Country` = `Country believed to be in / Country of capture`,
+      `Operation Year` = `Year of Interpol operation`
+    )
+  
+  datatable(
+    data_to_show,
+    options = list(
+      pageLength = 20,
+      scrollX = TRUE,
+      scrollY = "600px",
+      dom = 'Bfrtip',
+      buttons = list(
+        'copy', 
+        'csv', 
+        'excel',
+        list(
+          extend = 'pdf',
+          orientation = 'landscape'
+        )
+      ),
+      columnDefs = list(
+        list(width = '150px', targets = 0),
+        list(width = '200px', targets = 2)
+      ),
+      initComplete = JS(
+        "function(settings, json) {",
+        "$(this.api().table().header()).css({'background-color': '#3498db', 'color': '#fff'});",
+        "}"
+      )
+    ),
+    filter = 'top',
+    rownames = FALSE,
+    class = 'cell-border stripe hover'
+  ) %>%
+    formatStyle('Status',
+                backgroundColor = styleEqual(
+                  c("Free", "Captured", "Deceased", "Unknown"),
+                  c("#ffcccc", "#ccffcc", "#e6e6e6", "#fff3cd")
+                ),
+                fontWeight = 'bold') %>%
+    formatStyle('Age',
+                background = styleColorBar(c(20, 80), 'lightblue'),
+                backgroundSize = '100% 90%',
+                backgroundRepeat = 'no-repeat',
+                backgroundPosition = 'center') %>%
+    formatStyle(columns = colnames(data_to_show), fontSize = '12px')
+})
+```

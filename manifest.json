@@ -5,20 +5,5 @@
   "metadata": {
     "appmode": "shiny",
     "entrypoint": "app.R"
-  },
-  "packages": null,
-  "files": {
-    "app.R": {
-      "checksum": "checksum_placeholder"
-    },
-    "Countries.csv": {
-      "checksum": "checksum_placeholder"
-    },
-    "Fugitives.csv": {
-      "checksum": "checksum_placeholder"
-    },
-    "Regions.csv": {
-      "checksum": "checksum_placeholder"
-    }
   }
 }

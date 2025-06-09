@@ -6,7 +6,6 @@ library(plotly)
 library(DT)
 library(leaflet)
 library(viridis)
-# Clear everything first
 if(file.exists("manifest.json")) file.remove("manifest.json")
 if(file.exists("app.R-manifest.json")) file.remove("app.R-manifest.json")
 
@@ -24,6 +23,11 @@ if(is.null(manifest$platform)) {
 
 # Verify final content
 cat(readLines("manifest.json"), sep = "\n")
+
+rsconnect::setAccountInfo(name='rwcrf7-sanny0un0sowadh-wamik',
+			  token='CA2CC17BFEED007C14D237DE2A1AF598',
+			  secret='L+YkCe0dDNfUjs2uYd1KJp076brx6ByCKBNJY9E0')
+
 # Load and preprocess data
 fugitives <- read_csv("Fugitives.csv", show_col_types = FALSE)
 countries <- read_csv("Countries.csv", show_col_types = FALSE)
